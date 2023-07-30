@@ -1,0 +1,203 @@
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+body{
+    background-color:#3A4350;
+    width:100%;
+    height:100%;
+    color:white;
+}
+
+.container{
+    width:100%;
+    max-width:600px;
+    margin: 0 auto;
+    margin-top:2rem;
+}
+
+.text-center{
+    text-align: center;
+}
+.app-header{
+    margin-bottom:30px;
+    font-size:45px;
+}
+
+.hangman-collapser{ 
+    display:flex;
+    align-items:center;
+    margin-bottom:100px;
+
+    /* Middle collapsers */
+    & > *{
+        margin-top:40px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        width:50%;
+    }
+}
+.hangman-poll{
+    height:100px;
+    position:relative;
+    display:flex;
+
+   
+}
+
+.left-poll{
+    height:150px;
+    width:2px;
+    background:white;
+    position:relative;
+    
+    &::before{
+        content: '';
+        position:absolute;
+        bottom:0px;
+        left:50%;
+        transform: translate(-50%,50%);
+        background-color:white;
+        width:45px;
+        height:2px;
+    }
+}
+
+.top-poll{
+    width:75px;
+    height:2px;
+    background:white;
+}
+
+.right-poll{
+    height:30px;
+    width:2px;
+    background:White;
+}
+
+
+
+.hangman{
+    position:relative;
+}
+
+/*  ! Hangman Skeleton */
+.hangman-skeleton{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    transform: translate(-50%,33%);
+    left: 100%;
+    top: 0px;
+}
+
+.hangman-skeleton .head{
+    height:30px;
+    width:30px;
+    border-radius: 50%;
+    background:transparent;
+    border:2px solid white;
+}
+
+.hangman-skeleton .body{
+    position:relative;
+    background-color: white;
+    height:55px;
+    width:2px;
+
+    & > *{
+        position:absolute;
+        background-color: white;
+        transform:translate(-50%,50%);
+    }
+
+    & .left-arm{
+        left:-10px;
+        top:0%;
+        transform: rotate(135deg);
+        height:30px;
+        width:2px;
+    }
+    & .right-arm{
+        left:10px;
+        top:0%;
+        transform: rotate(45deg);
+        height:30px;
+        width:2px;
+    }
+
+    & .right-leg{
+        left:50%;
+        bottom:-18%;
+        transform: translate(500%,50%) rotate(-45deg);
+        height:30px;
+        width:2px;
+    }
+
+    & .left-leg{
+        left:-50%;
+        bottom:-18%;
+        transform: translate(-500%,50%) rotate(-135deg);
+        height:30px;
+        width:2px;
+    }
+}
+
+
+.word{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden-field{
+    opacity:0;
+    transition: opacity .2s linear;
+}
+
+span.secret-word{
+    margin:0 10px;
+    border-bottom:1px solid goldenrod;
+    height:25px;
+    width:25px;
+    display:inline-block;
+    font-size:25px;
+    padding-bottom:5px;
+}

@@ -1,11 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hangman</title>
+  <title>Title</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
+
+    <div class="container">
+        <h2 class="text-center app-header">Hangman</h2>
+        <p class="text-center">Press key to find secret word.</p>
+
+        <div class="hangman-collapser">
+            <div class="hangman">
+                <div class="hangman-poll">
+                    <div class="left-poll"></div>
+                    <div class="top-poll"></div>
+                    <div class="right-poll"></div>
+
+                    <div class="hangman-skeleton">
+                        <div wrong-level="1" class="head hidden-field"></div>
     
+                        <div wrong-level="2" class="body hidden-field">
+                            <div wrong-level="3" class="left-arm hidden-field"></div>
+                            <div wrong-level="4" class="right-arm hidden-field"></div>
+                            <div wrong-level="5" class="left-leg hidden-field"></div>
+                            <div wrong-level="6" class="right-leg hidden-field"></div>
+                        </div>
+                   
+                    </div>
+                </div>
+
+               
+            </div>
+            <div id="old-words" class="old-words text-center"></div>
+        </div>
+
+        <div id="word" class="word text-center"></div>
+    </div>
+    
+    <script src="index.js"></script>
 </body>
+
 </html>
