@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Raleway:wght@100&display=swap');
+
+html{
+    
+}
+body{
+    font-family:'Poppins','sans-serif';
+    background:rgb(241,245,248);
+}
+
+.asian-header{
+    font-family: 'Great Vibes', cursive;
+    font-size:3rem;
+    color:#ff6a23;
+    padding-top:20px;
+}
+
+.item-container .col{
+    gap:30px;
+}
+
+.img-bg{
+    width:250px;
+    height:150px;
+}
+
+.bg-cover{
+    background-position: center!important;
+    background-size: cover!important;
+    background-repeat: no-repeat!important;
+}
+
+.info-side{
+    color:#ff6a23;
+}
+
+.info-side .info-header{
+    border-bottom:1px solid rgba(0,0,0,.5);
+    padding-bottom:1rem;
+    font-size:1.3rem;
+    font-weight: 500;
+}
+.info-body{
+    font-size:1rem;
+}
+
+.btn.active{
+    background:var(--bs-dark);
+    color:white;
+}
