@@ -30,6 +30,7 @@ const questionsEl = document.getElementById("questions");
 const results = document.getElementById("results");
 
 
+const startBtn = document.getElementById("start-button");
 const timeoutEl = document.getElementById("timeout-el");
 const questionTitleEl= document.getElementById("question-title-el")
 const cardTitleEl = document.getElementById("card-title-el");
@@ -38,46 +39,54 @@ const nextQuestionBtn = document.getElementById("next-question");
 
 
 let currentQuestion;
-let questionNumber = 0;
+let questionIndex = 0;
 
 let correctAnswerCount = 0;
 let wrongAnswerCount   = 0;
+let questionTimeLeft = 0;
+
 
 const appSettings = {
     isStarted :  false,
-    questionTime  : 4,
-    questionInterval : null
+    isFinished : false,
+    questionTime  : 10,
+    questionInterval : null,
+    canPassable : false,
+    canAnswerable : false
 };
 
-document.onkeydown = (e) => {
-    if(!appSettings.isStarted)
-    {
-        if(e.code == "Enter" )
-        {
-            startApp();
-        }
-    }
-}
+
+
 
 
 function startApp()
 {
     appSettings.isStarted = true;
- 
-    starting.classList.add("hidden");
+    hideAndShow(starting,questionsEl);
+    showQuestion(0);
+}
 
-    setTimeout(() => {
-        questionsEl.classList.remove("hidden");        
-        showQuestion(0);
-    }, 300);
+function resetApp()
+{
+    appSettings.isStarted = false;
+    appSettings.isFinished = false;
+    appSettings.canPassable = false;
+    appSettings.canAnswerable = false;
 
+    hideAndShow(results,starting);
+    questionIndex = 0;
+    correctAnswerCount = 0;
+    wrongAnswerCount = 0;
+    currentQuestion = {};
 }
 
 function showQuestion(number = 0)
 {
+    startQuestion();
+    
     currentQuestion = questions[number];
 
-    cardTitleEl.innerHTML =  ` ${questionNumber+1} of ${questions.length +1} questions`;
+    cardTitleEl.innerHTML =  ` ${questionIndex+1} of ${questions.length} questions`;
     timeoutEl.innerHTML = appSettings.questionTime.toString();
     questionTitleEl.innerHTML = currentQuestion.question;
     questionAnswersEl.innerHTML =  Object.keys(currentQuestion.answers).map( answerCode => {
@@ -87,27 +96,54 @@ function showQuestion(number = 0)
 
 
     appSettings.questionInterval = setInterval(() => {
-        if(appSettings.questionTime ==  0){
-            console.log("SÜRE BİTTİ!");
-            blockAnswers();
+        if(questionTimeLeft ==  0){
+            endQuestion();
             showAnswer();
             clearInterval(appSettings.questionInterval);
         }else{
-            appSettings.questionTime--;
-            timeoutEl.innerHTML = appSettings.questionTime.toString();
+            questionTimeLeft--;
+            timeoutEl.innerHTML = questionTimeLeft.toString();
         }
     }, 1000);
+
+
 }
 
+function startQuestion()
+{
+    unblockAnswers();
+    blockNavigation();
+    questionTimeLeft = appSettings.questionTime;
+}
+
+function endQuestion()
+{
+    blockAnswers();
+    unblockNavigation();
+}
 
 function blockAnswers()
 {
+    appSettings.canAnswerable = false;
     questionAnswersEl.classList.add("is-answered");
 }
 
 function unblockAnswers()
 {
+    appSettings.canAnswerable = true;
     questionAnswersEl.classList.remove("is-answered");
+}
+
+function blockNavigation()
+{
+    appSettings.canPassable = false;
+    nextQuestionBtn.className = "btn btn-primary inactive-button";
+}
+
+function unblockNavigation()
+{
+    appSettings.canPassable = true;
+    nextQuestionBtn.className = "btn btn-primary";
 }
 
 function showAnswer()
@@ -116,23 +152,110 @@ function showAnswer()
     document.querySelector(`[answer-code=${currentQuestion.correctAnswer}]`).className = "is-valid question-answer";
 }
 
-document.addEventListener("click",(e) => {
-    if([...e.target.classList].includes("question-answer"))
-    {
-        let answer = e.target.getAttribute("answer-code");
-        
-        clearInterval(appSettings.questionInterval);
+function doAnswer(answerCode)
+{
+    clearInterval(appSettings.questionInterval);
 
-        if(currentQuestion.isCorrect(answer))
+    if(currentQuestion.isCorrect(answerCode))
+    {
+        correctAnswerCount++;
+    }
+    else{
+        document.querySelector(`[answer-code=${answerCode}]`).className = "question-answer is-invalid";
+        wrongAnswerCount++;
+    }
+    endQuestion();
+    showAnswer();
+}
+
+function nextQuestionChecker()
+{
+    questionIndex++;
+
+    if(questions.length <= questionIndex)
+    {
+        hideAndShow(questionsEl,results);
+        appSettings.isFinished = true;
+        setResults();
+    }
+    
+    else if(appSettings.canPassable)
+    {
+        showQuestion(questionIndex);
+    }
+
+
+    if(questions.length-1 == questionIndex)
+    {
+        nextQuestionBtn.innerHTML ="Finish!";
+    }
+
+
+}
+
+function setResults()
+{
+    results.innerHTML = `
+    <div class="alert alert-success">
+    <p>Congratulations! ${correctAnswerCount} correct answer from ${questions.length} answers!</p>
+    <button onclick="resetApp()" class="btn btn-primary">Reset</button>
+    </div> 
+    `
+}
+
+function hideAndShow(hideEl,showEl)
+{
+    hideEl.classList.add("hidden");
+
+    setTimeout(() => {
+        hideEl.style.display = "none";
+
+        showEl.style.display="block";
+        showEl.classList.remove("hidden");
+    }, 300);
+}
+
+
+
+// Listen user keydowns
+document.onkeydown = (e) => {
+
+    let key = e.code.replace("Key","").toLowerCase();
+
+    if(key == "enter" )
+    {
+        if(!appSettings.isStarted)
+            startApp();
+        else if(!appSettings.isFinished && appSettings.canPassable)
+            nextQuestionChecker()
+    }
+
+    if(appSettings.canAnswerable)
+    {
+        if(["a","b","c","d"].includes(key)){
+            doAnswer(key);
+        }
+    }
+}
+// Click the one of answer
+document.addEventListener("click",(e) => {
+
+    if([...e.target.classList].includes("question-answer"))
+    {   
+        if(appSettings.canAnswerable)
         {
-            correctAnswerCount++;
-            showAnswer();
-        }
-        else{
-            e.target.className = "question-answer is-invalid";
-            wrongAnswerCount++;
-            showAnswer();
-        }
+            let answer = e.target.getAttribute("answer-code");
+            doAnswer(answer);
+        }        
     }
 })
 
+// Listen Next Question Click
+nextQuestionBtn.addEventListener("click",function(){
+    nextQuestionChecker();
+})
+
+startBtn.addEventListener("click",function()
+{
+    startApp();
+})
