@@ -4,6 +4,7 @@ const TABLE_BODY = document.getElementById("table-body");
 // Course constructor
 function Course(title,instructor,image)
 {
+    this.id = new Date().getTime();
     this.title = title;
     this.instructor = instructor;
     this.image = image;
@@ -28,7 +29,23 @@ UI.prototype.removeCourseFromList = function(element){
     if(element.classList.contains("delete"))
     {
         element.parentElement.parentElement.remove();
+        let ui = new UI();
+        ui.showAlert("The course has been deleted","danger");
+        Storage.removeCourseFromList()
+
+        
     }
+}
+UI.prototype.showAlert = function(message,type)
+{
+    let html =`<div class="alert alert-${type}">${message}</div>`;
+    document.querySelectorAll(".row")[0].insertAdjacentHTML("afterbegin",html);
+
+    setTimeout(() => {
+        let nodes = document.querySelectorAll(".alert");
+        nodes[nodes.length-1].remove();
+    }, 3000);
+    
 }
 
 FORM.addEventListener("submit",function(e){
@@ -42,13 +59,20 @@ FORM.addEventListener("submit",function(e){
     const course = new Course(title,instructor,image);
     const ui = new UI();
 
+    if(title === "" || instructor === '' || image === '' )
+    {
+        ui.showAlert("Please complete the form.","warning");
+        return;
+    }
+    
+
     ui.addCourseToList(course);
+    ui.showAlert("Course has been added.","success");
     ui.clearForm();
     // show on ui  
 
 
 
-    console.log(title,instructor,image);
 });
 
 TABLE_BODY.addEventListener("click",function(e)
